@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>Vizyondaki Filimler</title>
+  </head>
+  <body>
+
+	<table>
+	<tr>
+		<td>Aranan İsim</td>
+		<td>Bulunan İsim</td>
+		<td>PUAN</td>
+	</tr>
+  	{% for film in films %}
+	  <tr>
+	    <td>{{ film.finding_name }}</td>
+	    <td>{{ film.finded_name }}</td>
+        <td><a href="{{ film.link }}">{{ film.raiting }}</a></td> 
+	  </tr>
+    {% endfor %}
+	
+	</table>
+
+----------------------------------------
+
+    <br>
+    <br>
+    <br>
+    Aşağıdaki Filmiler İmdbde Bulunamadı:
+    <br>
+  	{% for film in not_fond_films %}
+        {{ film }}
+        <br>
+    {% endfor %}
+  </body>
+</html>
