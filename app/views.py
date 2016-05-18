@@ -6,7 +6,7 @@ from app import app
 import operator
 imdb = Imdb()
 
-#türkçe karakterler sıkıntı olmasın diye fonksiyon
+#türkçe karakterler sıkıntısı olabiliyor nadiren
 def utf8_2_ascii(string):
 	tab = {"Ö": "O", "ç": "c", "Ü": "U",  "Ç": "C",   "İ": "I",   "ı": "i",
 	    "Ğ": "G", "ö": "o", "ş": "s", "ü": "u", "Ş": "S",  "ğ": "g"}
@@ -28,7 +28,7 @@ def index():
 				"http://www.sinemalar.com/sinemasalonu/1665/iskenderun-prime-mall-prestige"
 				]
 	
-	#Sinemalardaki filmlerin isimlerini çekiyor
+	#Sinemalardaki filmlerin isimlerini çek
 	film_names = set()
 	for site in siteler:
 		site_html = requests.get(site).content
@@ -42,42 +42,42 @@ def index():
 	
 	film_names = list(film_names)	
 	
-	#İmdb'den film verileri çekiliyor
+	#İmdb'den film verileri çek
 	imdbde_olmayan_filmler =[]
 	for film_name in film_names:
 		film = {"finding_name":film_name,"finded_name":"","link":"","raiting":None}
 		print(film_name+" ' filminin verileri alınıyor")
 
 		try:
-			#türkçe karakterler silinip arama linki oluşturup aranıyor
+			#türkçe karakterler silip arama linki oluştur. ara.
 			imdb_search_link = "http://www.imdb.com/find?q={}&s=tt&ref_=fn_al_tt_mr".format(utf8_2_ascii(film_name))
 			imdb_search_html = requests.get(imdb_search_link).content
 			soup = BeautifulSoup(imdb_search_html,"html.parser")
 			table = soup.find(class_="findSection")
 			film_imdb_id = table.find(class_="findResult").a['href']
-			#link içerisinden id çekiliyor
+			#link içerisinden idleri çek
 			film_imdb_id = film_imdb_id[7:16]
 		except:
 			imdbde_olmayan_filmler.append(film_name)
 			continue
 
 		film_get = imdb.get_title_by_id(film_imdb_id)
-		#imdb puanını çekme
+		#imdb puanını çek
 		temp = film_get.rating
 		film['raiting'] = temp
 
-		#imdb isimini çekme
+		#imdb isimini çek
 		temp = film_get.title
 		film['finded_name'] = temp
 		
-		#link oluşturma
+		#link oluştur
 		temp = "http://www.imdb.com/title/"+film_imdb_id
 		film['link']=temp
 		films.append(film)
 
-	#filmleri imdb puanına göre sıralama
+	#filmleri imdb puanına göre sırala
 	films.sort(key=operator.itemgetter('raiting'))
-	# sıralamayı terse çevirme
+	# sıralamayı terse çevir
 	films = [films[i] for i in range(len(films)-1,-1,-1)]
 	return render_template('index.html',
 							films = films,
