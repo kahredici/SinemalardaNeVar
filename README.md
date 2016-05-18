@@ -1,5 +1,5 @@
 # SinemalardaNeVar
-Eklediğiniz sinemalarda ki filmleri bulan, imdb puanlarına göre sıralayan python scripti.
+Eklediğiniz sinemalarda ki filmleri bulan, imdb puanlarına göre sıralayan bir sinema python scripti.
 
 Gereklilikler:
 ```
