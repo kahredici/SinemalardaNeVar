@@ -19,7 +19,9 @@
     {% endfor %}
 	
 	</table>
-
+	{% for site in sites %}
+		<a href="{{ site }}">{{ site }}</a> </br>
+	{% endfor%}
 ----------------------------------------
 
     <br>

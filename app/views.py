@@ -4,6 +4,8 @@ from imdbpie import Imdb
 import requests
 from app import app
 import operator
+import json
+
 imdb = Imdb()
 
 #türkçe karakterler sıkıntı olmasın diye fonksiyon
@@ -21,12 +23,22 @@ def utf8_2_ascii(string):
 @app.route('/')
 @app.route('/index')
 def index():
-	films =[]
-	siteler = ["http://www.sinemalar.com/sinemasalonu/356/hatay-konak",
-				"http://www.sinemalar.com/sinemasalonu/1808/antakya-prima-mall-prestige",
-				"http://www.sinemalar.com/sinemasalonu/1997/antakya-palladium-cinens",
-				"http://www.sinemalar.com/sinemasalonu/1665/iskenderun-prime-mall-prestige"
-				]
+	try:
+		#veri tabanı json yardımıyla açılıyor
+		dosya = open("app/static/db","r")
+		db_films = json.loads(dosya.read())
+		dosya.close()
+	except:
+		#eğer data base dosyası yoksa
+		open("app/static/db", 'w').close()
+		db_films=[]
+	
+	#db deki film isimleri bulunuyor
+	db_film_names = [i['finding_name'] for i in db_films]
+
+	dosya = open("app/static/sinemalar","r")
+	siteler = json.loads(dosya.read())
+	dosya.close()
 	
 	#Sinemalardaki filmlerin isimlerini çekiyor
 	film_names = set()
@@ -38,13 +50,19 @@ def index():
 		for film_div in film_divs:
 			name_div = film_div.find(class_="bestof-detail")
 			film_names.add(name_div.find("small").string)
-	print("\n --- Sinemadaki filmler çekildi--- ")
+	print("\n --- Sinemadaki film isimleri çekildi. Arama yapılıyor--- ")
 	
 	film_names = list(film_names)	
 	
 	#İmdb'den film verileri çekiliyor
 	imdbde_olmayan_filmler =[]
-	for film_name in film_names:
+
+	films =[]
+
+	#film internette var db de yoksa
+	#internetten veriler çekiliyor films listesine kaydediliyor
+	gen = (i for i in film_names if i not in db_film_names)
+	for film_name in gen:
 		film = {"finding_name":film_name,"finded_name":"","link":"","raiting":None}
 		print(film_name+" ' filminin verileri alınıyor")
 
@@ -75,10 +93,22 @@ def index():
 		film['link']=temp
 		films.append(film)
 
-	#filmleri imdb puanına göre sıralama
+	#film internettede db de de varsa 
+	#veriler db den çekiliyor internet boşa yorulmuyor
+	gen = (i for i in film_names if i in db_film_names)
+	for film_name in gen:
+		for k in db_films:
+			if k['finding_name'] == film_name:
+				films.append(k)
+
 	films.sort(key=operator.itemgetter('raiting'))
 	# sıralamayı terse çevirme
 	films = [films[i] for i in range(len(films)-1,-1,-1)]
+	dosya = open("app/static/db","w")
+	dosya.write(json.dumps(films))
+	dosya.close()
+	print("İşlem Tamam")
 	return render_template('index.html',
 							films = films,
-							not_fond_films=imdbde_olmayan_filmler)
+							not_fond_films=imdbde_olmayan_filmler,
+							sites = siteler)
