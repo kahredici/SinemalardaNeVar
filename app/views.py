@@ -8,7 +8,7 @@ import json
 
 imdb = Imdb()
 
-#türkçe karakterler sıkıntısı olabiliyor nadiren
+#türkçe karakterler sıkıntı olmasın diye fonksiyon
 def utf8_2_ascii(string):
 	tab = {"Ö": "O", "ç": "c", "Ü": "U",  "Ç": "C",   "İ": "I",   "ı": "i",
 	    "Ğ": "G", "ö": "o", "ş": "s", "ü": "u", "Ş": "S",  "ğ": "g"}
@@ -40,7 +40,7 @@ def index():
 	siteler = json.loads(dosya.read())
 	dosya.close()
 	
-	#Sinemalardaki filmlerin isimlerini çek
+	#Sinemalardaki filmlerin isimlerini çekiyor
 	film_names = set()
 	for site in siteler:
 		site_html = requests.get(site).content
@@ -54,7 +54,7 @@ def index():
 	
 	film_names = list(film_names)	
 	
-	#İmdb'den film verileri çek
+	#İmdb'den film verileri çekiliyor
 	imdbde_olmayan_filmler =[]
 
 	films =[]
@@ -67,33 +67,32 @@ def index():
 		print(film_name+" ' filminin verileri alınıyor")
 
 		try:
-			#türkçe karakterler silip arama linki oluştur. ara.
+			#türkçe karakterler silinip arama linki oluşturup aranıyor
 			imdb_search_link = "http://www.imdb.com/find?q={}&s=tt&ref_=fn_al_tt_mr".format(utf8_2_ascii(film_name))
 			imdb_search_html = requests.get(imdb_search_link).content
 			soup = BeautifulSoup(imdb_search_html,"html.parser")
 			table = soup.find(class_="findSection")
 			film_imdb_id = table.find(class_="findResult").a['href']
-			#link içerisinden idleri çek
+			#link içerisinden id çekiliyor
 			film_imdb_id = film_imdb_id[7:16]
 		except:
 			imdbde_olmayan_filmler.append(film_name)
 			continue
 
 		film_get = imdb.get_title_by_id(film_imdb_id)
-		#imdb puanını çek
+		#imdb puanını çekme
 		temp = film_get.rating
 		film['raiting'] = temp
 
-		#imdb isimini çek
+		#imdb isimini çekme
 		temp = film_get.title
 		film['finded_name'] = temp
 		
-		#link oluştur
+		#link oluşturma
 		temp = "http://www.imdb.com/title/"+film_imdb_id
 		film['link']=temp
 		films.append(film)
 
-<<<<<<< HEAD
 	#film internettede db de de varsa 
 	#veriler db den çekiliyor internet boşa yorulmuyor
 	gen = (i for i in film_names if i in db_film_names)
@@ -102,11 +101,8 @@ def index():
 			if k['finding_name'] == film_name:
 				films.append(k)
 
-=======
-	#filmleri imdb puanına göre sırala
->>>>>>> a192701de56d0e68def26e0583ce46ad3088b12e
 	films.sort(key=operator.itemgetter('raiting'))
-	# sıralamayı terse çevir
+	# sıralamayı terse çevirme
 	films = [films[i] for i in range(len(films)-1,-1,-1)]
 	dosya = open("app/static/db","w")
 	dosya.write(json.dumps(films))
