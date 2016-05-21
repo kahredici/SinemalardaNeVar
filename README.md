@@ -17,3 +17,11 @@ terminal
 ```
 python run.py
 ```
+
+#Yapılacaklar
+
+```
+[] Masa üstü arayüzü
+[] Database olarak json kullanımı
+[] Ubuntu paket mangera ekleme
+```
