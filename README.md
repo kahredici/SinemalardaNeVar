@@ -1,6 +1,9 @@
 # SinemalardaNeVar
 Eklediğiniz sinemalarda ki filmleri bulan, imdb puanlarına göre sıralayan bir sinema python scripti.
 
+Örnek link:
+[Hatay'da ki sinemalar](http://sinemalardanevar.herokuapp.com) 
+
 Gereklilikler:
 ```
 flask
@@ -11,9 +14,11 @@ imdbpie
 
 #Kullanım
 
-views.py içerisindeki siteler listesini güncelle. (Sadece sinemalar.com verileri çalışır)
+app/static/sinemalar içerisindeki siteleri json listesi olarak güncelle. 
+(Sadece sinemalar.com verileri çalışır)
 
 terminal
 ```
 python run.py
 ```
+
