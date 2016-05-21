@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template,url_for,redirect
 from bs4 import BeautifulSoup
 from imdbpie import Imdb
 import requests
@@ -112,3 +112,10 @@ def index():
 							films = films,
 							not_fond_films=imdbde_olmayan_filmler,
 							sites = siteler)
+
+@app.route("/sifirla")
+def sifirla():
+	dosya = open("app/static/db","w")
+	dosya.write(json.dumps([{"link": "a", "finded_name": "a", "raiting": 0, "finding_name": "a"}]))
+	dosya.close()
+	return redirect(url_for("index"))

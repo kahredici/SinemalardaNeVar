@@ -3,22 +3,22 @@
     <title>Vizyondaki Filimler</title>
   </head>
   <body>
-
+  <br>
+  <h3> KADİR CAN ÇETİN'İN KATIKILARIYLA <br> <small>Hatayda Vizyondaki Filmler</small> </h3>
+  
 	<table>
 	<tr>
-		<td>Aranan İsim</td>
-		<td>Bulunan İsim</td>
-		<td>PUAN</td>
+		<td>İsim</td>
+		<td>PUAN <a href="{{ url_for('sifirla') }}">(GÜNCELLE)</a></td>
 	</tr>
   	{% for film in films %}
 	  <tr>
-	    <td>{{ film.finding_name }}</td>
 	    <td>{{ film.finded_name }}</td>
         <td><a href="{{ film.link }}">{{ film.raiting }}</a></td> 
 	  </tr>
     {% endfor %}
-	
 	</table>
+  <br><br>
 	{% for site in sites %}
 		<a href="{{ site }}">{{ site }}</a> </br>
 	{% endfor%}
@@ -33,5 +33,7 @@
         {{ film }}
         <br>
     {% endfor %}
+    <br>
+    
   </body>
-</html>
+</html> 
