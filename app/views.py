@@ -93,6 +93,7 @@ def index():
 		film['link']=temp
 		films.append(film)
 
+	print(1)
 	#film internettede db de de varsa 
 	#veriler db den çekiliyor internet boşa yorulmuyor
 	gen = (i for i in film_names if i in db_film_names)
@@ -100,11 +101,24 @@ def index():
 		for k in db_films:
 			if k['finding_name'] == film_name:
 				films.append(k)
+	print(2)
 
+	films_tanimsiz = [i for i in films if i['raiting']==None]
+	films = [i for i in films if i['raiting']!=None]
+	
+	print("filmler",films)
+	print("tanımsizlar",films_tanimsiz)
 	films.sort(key=operator.itemgetter('raiting'))
+	films_tanimsiz.extend(films)
+	films = films_tanimsiz
+	
+	print("yeni filmler",films)
+
 	# sıralamayı terse çevirme
 	films = [films[i] for i in range(len(films)-1,-1,-1)]
 	dosya = open("app/static/db","w")
+	
+	print(3)
 	dosya.write(json.dumps(films))
 	dosya.close()
 	print("İşlem Tamam")
